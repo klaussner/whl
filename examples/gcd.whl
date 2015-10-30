@@ -1,0 +1,15 @@
+a := 12 ; b := 18 ;
+
+if a = 0 then
+  r := b
+else
+  while b != 0 do
+    if a > b then
+      a := a - b
+    else
+      b := b - a
+    fi
+  od ;
+
+  r := a
+fi
