@@ -1,0 +1,4 @@
+#!/bin/bash
+
+WHL=${BASH_SOURCE%/*}/whl.jar
+java -jar $WHL "$@"
