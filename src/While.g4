@@ -13,7 +13,7 @@ arthExp
 
 boolExp
   : BOOL # boolOpd
-  | '!' boolExp # not
+  | 'not' boolExp # not
   | '(' boolExp ')' # boolParenOpd
 
   | arthExp op=('='|'!='|'<'|'<='|'>'|'>=') arthExp # compare
