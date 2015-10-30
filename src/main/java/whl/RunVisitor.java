@@ -5,6 +5,8 @@ import whl.gen.*;
 import java.util.Stack;
 
 /**
+ * The RunVisitor class is used for interpreting WHILE programs.
+ *
  * @author Christian Klaussner
  */
 public class RunVisitor extends WhileBaseVisitor<Void> {
@@ -25,6 +27,7 @@ public class RunVisitor extends WhileBaseVisitor<Void> {
 
   /**
    * Gets the root scope containing all variables and their values.
+   *
    * @return the root scope
    */
   public Scope getRootScope() {

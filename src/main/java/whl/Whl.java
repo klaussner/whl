@@ -7,12 +7,15 @@ import whl.gen.*;
 import java.io.*;
 
 /**
+ * WHILE interpreter main class.
+ *
  * @author Christian Klaussner
  */
 public class Whl {
 
   /**
    * Entry point.
+   *
    * @param args the program arguments
    */
   public static void main(String[] args) {
@@ -28,6 +31,7 @@ public class Whl {
 
   /**
    * Gets a parser for the given WHILE source file.
+   *
    * @param filename the filename of the program
    * @return a parser for the program
    */
@@ -47,6 +51,7 @@ public class Whl {
 
   /**
    * Evaluates the program arguments and runs the appropriate command.
+   *
    * @param args the program arguments
    */
   private void start(String[] args) {
@@ -79,6 +84,7 @@ public class Whl {
 
   /**
    * Interprets the given WHILE source file.
+   *
    * @param filename the filename of the program to interpret
    */
   private void run(String filename) {
