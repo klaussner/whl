@@ -36,6 +36,9 @@ public class RunVisitor extends WhileBaseVisitor<Void> {
 
   // Arithmetic expressions
 
+  /*
+   * arthExp : INT ;
+   */
   @Override
   public Void visitIntOpd(WhileParser.IntOpdContext ctx) {
     intStack.push(Types.intValue(ctx.INT()));
@@ -43,6 +46,9 @@ public class RunVisitor extends WhileBaseVisitor<Void> {
     return null;
   }
 
+  /*
+   * arthExp : IDENT ;
+   */
   @Override
   public Void visitVarOpd(WhileParser.VarOpdContext ctx) {
     intStack.push(rootScope.get(ctx.IDENT().getText()));
@@ -50,6 +56,9 @@ public class RunVisitor extends WhileBaseVisitor<Void> {
     return null;
   }
 
+  /*
+   * arthExp : arthExp op='*' arthExp ;
+   */
   @Override
   public Void visitProduct(WhileParser.ProductContext ctx) {
     int a, b;
@@ -64,6 +73,9 @@ public class RunVisitor extends WhileBaseVisitor<Void> {
     return null;
   }
 
+  /*
+   * arthExp : arthExp op=('+'|'-') arthExp ;
+   */
   @Override
   public Void visitSum(WhileParser.SumContext ctx) {
     int a, b, result = 0;
@@ -88,6 +100,9 @@ public class RunVisitor extends WhileBaseVisitor<Void> {
 
   // Boolean expressions
 
+  /*
+   * boolExp : BOOL ;
+   */
   @Override
   public Void visitBoolOpd(WhileParser.BoolOpdContext ctx) {
     boolStack.push(Types.boolValue(ctx.BOOL()));
@@ -95,6 +110,9 @@ public class RunVisitor extends WhileBaseVisitor<Void> {
     return null;
   }
 
+  /*
+   * boolExp : '!' boolExp ;
+   */
   @Override
   public Void visitNot(WhileParser.NotContext ctx) {
     visit(ctx.boolExp());
@@ -103,6 +121,9 @@ public class RunVisitor extends WhileBaseVisitor<Void> {
     return null;
   }
 
+  /*
+   * boolExp : arthExp op=('='|'!='|'<'|'<='|'>'|'>=') arthExp ;
+   */
   @Override
   public Void visitCompare(WhileParser.CompareContext ctx) {
     int a, b;
@@ -138,6 +159,9 @@ public class RunVisitor extends WhileBaseVisitor<Void> {
     return null;
   }
 
+  /*
+   * boolExp : boolExp 'and' boolExp ;
+   */
   @Override
   public Void visitAnd(WhileParser.AndContext ctx) {
     visitChildren(ctx);
@@ -146,6 +170,9 @@ public class RunVisitor extends WhileBaseVisitor<Void> {
     return null;
   }
 
+  /*
+   * boolExp : boolExp 'or' boolExp ;
+   */
   @Override
   public Void visitOr(WhileParser.OrContext ctx) {
     visitChildren(ctx);
@@ -156,6 +183,9 @@ public class RunVisitor extends WhileBaseVisitor<Void> {
 
   // Statements
 
+  /*
+   * stmt : IDENT ':=' arthExp ;
+   */
   @Override
   public Void visitAssign(WhileParser.AssignContext ctx) {
     visit(ctx.arthExp());
@@ -164,6 +194,9 @@ public class RunVisitor extends WhileBaseVisitor<Void> {
     return null;
   }
 
+  /*
+   * stmt : 'if' boolExp 'then' stmtSeq ('else' stmtSeq)? 'fi' ;
+   */
   @Override
   public Void visitIf(WhileParser.IfContext ctx) {
     visit(ctx.boolExp());
@@ -181,6 +214,9 @@ public class RunVisitor extends WhileBaseVisitor<Void> {
     return null;
   }
 
+  /*
+   * stmt : 'while' boolExp 'do' stmtSeq 'od' ;
+   */
   @Override
   public Void visitWhile(WhileParser.WhileContext ctx) {
     visit(ctx.boolExp());
