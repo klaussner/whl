@@ -207,7 +207,7 @@ public class RunVisitor extends WhileBaseVisitor<Void> {
       WhileParser.StmtSeqContext elseContext = ctx.stmtSeq(1);
 
       if (elseContext != null) {
-        visit(ctx.stmtSeq(1));
+        visit(elseContext);
       }
     }
 
