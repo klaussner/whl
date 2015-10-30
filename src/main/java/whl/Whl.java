@@ -24,7 +24,7 @@ public class Whl {
     try {
       whl.start(args);
     } catch (WhlException e) {
-      System.err.println("Error: " + e.getMessage());
+      System.err.println(e.getMessage());
       System.exit(1);
     }
   }
