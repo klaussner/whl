@@ -86,9 +86,11 @@ public class Whl {
 
     ParseTree tree = parser.program();
 
-    RunVisitor v = new RunVisitor();
-    v.visit(tree);
+    if (parser.getNumberOfSyntaxErrors() == 0) {
+      RunVisitor v = new RunVisitor();
+      v.visit(tree);
 
-    System.out.print(v.getRootScope());
+      System.out.print(v.getRootScope());
+    }
   }
 }
