@@ -13,9 +13,7 @@ public class Scope {
     if (table.containsKey(name)) {
       return table.get(name);
     } else {
-      table.put(name, 0);
-
-      return 0;
+      throw new WhlException("undefined variable '" + name +  "'");
     }
   }
 
