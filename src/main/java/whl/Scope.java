@@ -1,6 +1,6 @@
 package whl;
 
-import java.util.HashMap;
+import java.util.*;
 
 public class Scope {
   private HashMap<String, Integer> table;
@@ -27,7 +27,11 @@ public class Scope {
   public String toString() {
     StringBuilder s = new StringBuilder();
 
-    for (String name : table.keySet()) {
+    // Sort keys by name
+    List<String> keys = new ArrayList<>(table.keySet());
+    Collections.sort(keys);
+
+    for (String name : keys) {
       s.append(name);
       s.append(": ");
       s.append(table.get(name));
