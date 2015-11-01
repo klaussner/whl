@@ -7,7 +7,7 @@ arthExp
   | IDENT # varOpd
   | '(' arthExp ')' # arthParenOpd
 
-  | arthExp op='*' arthExp # product
+  | arthExp op=('*'|'/') arthExp # product
   | arthExp op=('+'|'-') arthExp # sum
   ;
 
@@ -34,9 +34,10 @@ stmtSeq
   | // epsilon
   ;
 
+MUL : '*' ;
+DIV : '/' ;
 ADD : '+' ;
 SUB : '-' ;
-MUL : '*' ;
 
 EQ : '=' ;
 NEQ : '!=' ;

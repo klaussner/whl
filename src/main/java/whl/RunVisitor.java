@@ -57,18 +57,30 @@ public class RunVisitor extends WhileBaseVisitor<Void> {
   }
 
   /*
-   * arthExp : arthExp op='*' arthExp ;
+   * arthExp : arthExp op=('*'|'/') arthExp ;
    */
   @Override
   public Void visitProduct(WhileParser.ProductContext ctx) {
-    int a, b;
+    int a, b, result = 0;
 
     super.visitProduct(ctx);
 
     b = intStack.pop();
     a = intStack.pop();
 
-    intStack.push(a * b);
+    switch (ctx.op.getType()) {
+      case WhileParser.MUL:
+        result = a * b; break;
+
+      case WhileParser.DIV:
+        if (b == 0) {
+          throw new WhlException("division by zero");
+        }
+
+        result = a / b; break;
+    }
+
+    intStack.push(result);
 
     return null;
   }
@@ -85,7 +97,7 @@ public class RunVisitor extends WhileBaseVisitor<Void> {
     b = intStack.pop();
     a = intStack.pop();
 
-    switch(ctx.op.getType()) {
+    switch (ctx.op.getType()) {
       case WhileParser.ADD:
         result = a + b; break;
 
