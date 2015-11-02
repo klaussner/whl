@@ -15,6 +15,7 @@ After the execution terminates, the interpreter outputs the final program state 
 ## History
 
 * v0.1.0 (2015-10-30) - Initial release
+* v0.2.0 (2015-11-02) - Added division operator; improved error output
 
 ## License
 
