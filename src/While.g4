@@ -50,3 +50,4 @@ INT : '-'?[0-9]+ ;
 BOOL : 'true' | 'false' ;
 IDENT : [a-zA-Z][a-zA-Z0-9]* ;
 WS : [ \t\n\r]+ -> channel(HIDDEN) ;
+COMMENT : '#' ~[\n\r]* -> skip ;
