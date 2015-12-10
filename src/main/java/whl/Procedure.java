@@ -22,7 +22,8 @@ public class Procedure {
    * @param body the body of the procedure
    */
   public Procedure(String name, String[] params, String result,
-                   WhileParser.StmtSeqContext body) {
+    WhileParser.StmtSeqContext body) {
+
     this.name = name;
     this.params = params;
     this.result = result;
