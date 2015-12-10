@@ -12,7 +12,6 @@ import java.io.*;
  * @author Christian Klaussner
  */
 public class Whl {
-
   /**
    * Entry point.
    *

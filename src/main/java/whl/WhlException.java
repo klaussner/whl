@@ -7,7 +7,6 @@ package whl;
  * @author Christian Klaussner
  */
 public class WhlException extends RuntimeException {
-
   /**
    * Constructs a new WhlException object.
    *
