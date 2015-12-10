@@ -2,15 +2,17 @@ package whl;
 
 import whl.gen.*;
 
-import java.util.Stack;
+import java.util.*;
 
 /**
  * The RunVisitor class is used for interpreting WHILE programs.
  *
  * @author Christian Klaussner
  */
-public class RunVisitor extends WhileBaseVisitor<Void> {
-  private Scope rootScope;
+public class RunVisitor extends WhileBaseVisitor<Object> {
+  private Stack<Scope> scopes;
+
+  private HashMap<String, Procedure> procs;
 
   private Stack<Integer> intStack;
   private Stack<Boolean> boolStack;
@@ -19,7 +21,10 @@ public class RunVisitor extends WhileBaseVisitor<Void> {
    * Constructs a new RunVisitor object.
    */
   public RunVisitor() {
-    rootScope = new Scope();
+    scopes = new Stack<>();
+    scopes.push(new Scope());
+
+    procs = new HashMap<>();
 
     intStack = new Stack<>();
     boolStack = new Stack<>();
@@ -31,7 +36,7 @@ public class RunVisitor extends WhileBaseVisitor<Void> {
    * @return the root scope
    */
   public Scope getRootScope() {
-    return rootScope;
+    return scopes.get(0);
   }
 
   // Arithmetic expressions
@@ -51,7 +56,7 @@ public class RunVisitor extends WhileBaseVisitor<Void> {
    */
   @Override
   public Void visitVarOpd(WhileParser.VarOpdContext ctx) {
-    intStack.push(rootScope.get(ctx.IDENT().getText()));
+    intStack.push(scopes.peek().get(ctx.IDENT().getText()));
 
     return null;
   }
@@ -201,7 +206,7 @@ public class RunVisitor extends WhileBaseVisitor<Void> {
   @Override
   public Void visitAssign(WhileParser.AssignContext ctx) {
     visit(ctx.arthExp());
-    rootScope.set(ctx.IDENT().getText(), intStack.pop());
+    scopes.peek().set(ctx.IDENT().getText(), intStack.pop());
 
     return null;
   }
@@ -237,6 +242,109 @@ public class RunVisitor extends WhileBaseVisitor<Void> {
       visit(ctx.stmtSeq());
       visit(ctx.boolExp());
     }
+
+    return null;
+  }
+
+  // Procedures
+
+  /*
+   * IDENT (',' IDENT)*
+   */
+  @Override
+  public Object visitParamList(WhileParser.ParamListContext ctx) {
+    SortedSet<String> params = new TreeSet<>();
+
+    for (int i = 0; i < ctx.IDENT().size(); i++) {
+      String param = ctx.IDENT(i).getText();
+
+      if (! params.add(param)) {
+        throw new WhlException("duplicate parameter '" + param + "'");
+      }
+    }
+
+    return params.toArray(new String[params.size()]);
+  }
+
+  /*
+   * arthExp (',' arthExp)*
+   */
+  @Override
+  public Object visitArgList(WhileParser.ArgListContext ctx) {
+    int[] values = new int[ctx.arthExp().size()];
+
+    for (int i = 0; i < values.length; i++) {
+      visit(ctx.arthExp(i));
+      values[i] = intStack.pop();
+    }
+
+    return values;
+  }
+
+  /*
+   * 'proc' name=IDENT '(' 'val' paramList ',' 'res' result=IDENT ')' 'is'
+   *   stmtSeq 'end'
+   */
+  @Override
+  public Void visitProc(WhileParser.ProcContext ctx) {
+    String name = ctx.name.getText();
+
+    String[] params = (String[]) visit(ctx.paramList());
+    String result = ctx.result.getText();
+
+    for (String param : params) {
+      if (param.equals(result)) {
+        throw new WhlException("result variable has to be unique");
+      }
+    }
+
+    Procedure proc = new Procedure(name, params, result, ctx.stmtSeq());
+    procs.put(name, proc);
+
+    return null;
+  }
+
+  /*
+   * 'call' name=IDENT '(' argList ',' result=IDENT ')'
+   */
+  @Override
+  public Void visitCall(WhileParser.CallContext ctx) {
+    String name = ctx.name.getText();
+    String result = ctx.result.getText();
+
+    Procedure proc = procs.get(name);
+
+    if (proc == null) {
+      throw new WhlException("undefined procedure '" + name + "'");
+    }
+
+    // Write arguments to new scope
+    Scope scope = new Scope();
+
+    String[] params = proc.getParams();
+    int[] values = (int[]) visit(ctx.argList());
+
+    if (values.length != params.length) {
+      throw new WhlException("wrong number of arguments for '" + name + "'");
+    }
+
+    for (int i = 0; i < values.length; i++) {
+      scope.set(params[i], values[i]);
+    }
+
+    // Call procedure with new scope
+    scopes.push(scope);
+    visit(proc.getBody());
+    scopes.pop();
+
+    // Write result back to parent scope
+    String procResult = proc.getResult();
+
+    if (! scope.exists(procResult)) {
+      throw new WhlException("result variable not written");
+    }
+
+    scopes.peek().set(result, scope.get(procResult));
 
     return null;
   }

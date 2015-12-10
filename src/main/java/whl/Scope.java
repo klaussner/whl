@@ -33,6 +33,16 @@ public class Scope {
   }
 
   /**
+   * Checks whether the given variable exists in the scope.
+   *
+   * @param name the name of the variable
+   * @return true if the variable exists, otherwise false
+   */
+  public boolean exists(String name) {
+    return table.containsKey(name);
+  }
+
+  /**
    * Sets the value of the variable with the given name and defines it if
    * necessary.
    *

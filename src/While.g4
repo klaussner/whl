@@ -1,6 +1,9 @@
 grammar While;
 
-program : stmtSeq EOF ;
+program
+  : procSeq (';' stmtSeqPlus)? EOF
+  | stmtSeq EOF
+  ;
 
 arthExp
   : INT # intOpd
@@ -26,13 +29,24 @@ stmt
   | IDENT ':=' arthExp # assign
   | 'if' boolExp 'then' stmtSeq ('else' stmtSeq)? 'fi' # if
   | 'while' boolExp 'do' stmtSeq 'od' # while
+  | 'call' name=IDENT '(' argList ',' result=IDENT ')' # call
   ;
 
+stmtSeqPlus : stmt (';' stmt)* ;
+
 stmtSeq
-  : stmt ';' stmtSeq
-  | stmt
+  : stmtSeqPlus
   | // epsilon
   ;
+
+paramList : IDENT (',' IDENT)* ;
+
+argList : arthExp (',' arthExp)* ;
+
+proc : 'proc' name=IDENT '(' 'val' paramList ',' 'res' result=IDENT ')' 'is'
+  stmtSeq 'end' ;
+
+procSeq : proc (';' proc)* ;
 
 MUL : '*' ;
 DIV : '/' ;
