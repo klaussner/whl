@@ -20,7 +20,6 @@ After the execution terminates, the interpreter outputs the final program state 
 * v0.1.0 (2015-10-30) - Initial release
 * v0.2.0 (2015-11-02) - Added division operator; improved error output
 * v0.3.0 (2015-11-06) - Added single-line comments; added `whl` script for Windows
-
 * v1.0.0 (2015-12-10) - Added procedures; added line to semantic error messages
 
 ## License
