@@ -56,7 +56,14 @@ public class RunVisitor extends WhileBaseVisitor<Object> {
    */
   @Override
   public Void visitVarOpd(WhileParser.VarOpdContext ctx) {
-    intStack.push(scopes.peek().get(ctx.IDENT().getText()));
+    String name = ctx.IDENT().getText();
+    Scope scope = scopes.peek();
+
+    if (scope.exists(name)) {
+      intStack.push(scope.get(name));
+    } else {
+      throw new WhlException("undefined variable '" + name + "'", ctx);
+    }
 
     return null;
   }
@@ -79,7 +86,7 @@ public class RunVisitor extends WhileBaseVisitor<Object> {
 
       case WhileParser.DIV:
         if (b == 0) {
-          throw new WhlException("division by zero");
+          throw new WhlException("division by zero", ctx);
         }
 
         result = a / b; break;
@@ -259,7 +266,7 @@ public class RunVisitor extends WhileBaseVisitor<Object> {
       String param = ctx.IDENT(i).getText();
 
       if (! params.add(param)) {
-        throw new WhlException("duplicate parameter '" + param + "'");
+        throw new WhlException("duplicate parameter '" + param + "'", ctx);
       }
     }
 
@@ -294,7 +301,7 @@ public class RunVisitor extends WhileBaseVisitor<Object> {
 
     for (String param : params) {
       if (param.equals(result)) {
-        throw new WhlException("result variable has to be unique");
+        throw new WhlException("result variable has to be unique", ctx);
       }
     }
 
@@ -315,7 +322,7 @@ public class RunVisitor extends WhileBaseVisitor<Object> {
     Procedure proc = procs.get(name);
 
     if (proc == null) {
-      throw new WhlException("undefined procedure '" + name + "'");
+      throw new WhlException("undefined procedure", ctx);
     }
 
     // Write arguments to new scope
@@ -325,7 +332,7 @@ public class RunVisitor extends WhileBaseVisitor<Object> {
     int[] values = (int[]) visit(ctx.argList());
 
     if (values.length != params.length) {
-      throw new WhlException("wrong number of arguments for '" + name + "'");
+      throw new WhlException("wrong number of arguments", ctx);
     }
 
     for (int i = 0; i < values.length; i++) {
@@ -341,7 +348,7 @@ public class RunVisitor extends WhileBaseVisitor<Object> {
     String procResult = proc.getResult();
 
     if (! scope.exists(procResult)) {
-      throw new WhlException("result variable not written");
+      throw new WhlException("result variable not written", ctx);
     }
 
     scopes.peek().set(result, scope.get(procResult));
