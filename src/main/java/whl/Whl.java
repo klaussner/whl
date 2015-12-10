@@ -56,7 +56,7 @@ public class Whl {
   private void start(String[] args) {
     if (args.length < 1) {
       System.out.println(
-        "whl - WHILE interpreter (v0.3.0)\n" +
+        "whl - WHILE interpreter (v1.0.0)\n" +
         "Usage: run <source file>"
       );
 
